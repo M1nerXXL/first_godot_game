@@ -1,39 +1,53 @@
 extends CharacterBody2D
 
+signal death
 
 const SPEED = 100.0
 const JUMP_VELOCITY = -500.0
 const GRAVITY = 1
+const ACCELERATION = 10.0
 var crouch = false
+var deathOccured = false
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var coyote_timer: Timer = $CoyoteTimer
+@onready var top: RayCast2D = $Top
+@onready var bottom: RayCast2D = $Bottom
+@onready var left: RayCast2D = $Left
+@onready var right: RayCast2D = $Right
+@onready var death_particles: GPUParticles2D = $DeathParticles
+@onready var reset_timer: Timer = $ResetTimer
 
 # Crouching
 func _input(event):
-	if Input.is_action_just_pressed("big_crouch") and is_on_floor():
-		crouch = true
-		animated_sprite.play("crouching")
-		animation_player.play("crouch")
-		print("1")
-	if Input.is_action_just_released("big_crouch") and is_on_floor():
-		if crouch:
-			animated_sprite.play("stand")
-			animation_player.play("RESET")
-			await animated_sprite.animation_finished
-			print("2")
-			crouch = false
+	if !deathOccured and is_on_floor():
+		if Input.is_action_just_pressed("big_crouch"):
+			crouch = true
+			velocity.x = 0
+			animated_sprite.play("crouching")
+			animation_player.play("crouch")
+		if Input.is_action_just_released("big_crouch"):
+			if crouch:
+				animated_sprite.play("stand")
+				animation_player.play("RESET")
+				await animated_sprite.animation_finished
+				crouch = false
 
 func _physics_process(delta: float) -> void:
+	var jumping = false
+
+	# Gravity
+	if not is_on_floor():
+		velocity += get_gravity() * GRAVITY * delta
+
 	# Crouching restricts all movement.
 	if not crouch:
-		# Gravity
-		if not is_on_floor():
-			velocity += get_gravity() * GRAVITY * delta
-
 		# Jump
-		if Input.is_action_just_pressed("big_jump") and is_on_floor():
+		if Input.is_action_just_pressed("big_jump") and (is_on_floor() or !coyote_timer.is_stopped()):
 			velocity.y = JUMP_VELOCITY
+			coyote_timer.stop()
+			jumping = true
 
 		# Direction
 		var direction := Input.get_axis("big_left", "big_right")
@@ -55,8 +69,35 @@ func _physics_process(delta: float) -> void:
 
 		# Movement
 		if direction:
-			velocity.x = direction * SPEED
+			var speedBefore = velocity.x
+			var speedAfter = speedBefore + ACCELERATION * direction
+			speedAfter = clamp(speedAfter, -SPEED, SPEED)
+			velocity.x = speedAfter
+		if is_on_floor():
+			# If velocity and direction don't go the same way
+			if (velocity.x > 0 and direction < 0) or (velocity.x < 0 and direction > 0) or direction == 0:
+				velocity.x = move_toward(velocity.x, 0, SPEED)
 		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
+			if not direction:
+				velocity.x = move_toward(velocity.x, 0, ACCELERATION)
 
-		move_and_slide()
+	# Move and slide update
+	var was_on_floor = is_on_floor()
+
+	move_and_slide()
+
+	# Coyote timer
+	if not is_on_floor() and was_on_floor and !jumping:
+		coyote_timer.start()
+
+	# Crushed
+	if (top.is_colliding() and bottom.is_colliding()) or (left.is_colliding() and right.is_colliding()):
+		animated_sprite.visible = false
+		death_particles.emitting = true
+		deathOccured = true
+		reset_timer.start()
+		set_physics_process(false)
+		death.emit()
+
+func _on_reset_timer_timeout() -> void:
+	get_tree().reload_current_scene()

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ggtqngjej156"
-path="res://.godot/imported/ground_big.png-d0128cc3e052c4ca46f27eaac23e5f55.ctex"
+uid="uid://bo8v77sl668e6"
+path="res://.godot/imported/piston_big.png-9c933f8a544675a3025f8867ed63135f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ground_big.png"
-dest_files=["res://.godot/imported/ground_big.png-d0128cc3e052c4ca46f27eaac23e5f55.ctex"]
+source_file="res://assets/sprites/piston_big.png"
+dest_files=["res://.godot/imported/piston_big.png-9c933f8a544675a3025f8867ed63135f.ctex"]
 
 [params]
 

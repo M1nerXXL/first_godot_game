@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://cuf0f7lpvwj6w"]
+
+[ext_resource type="Script" path="res://scripts/piston.gd" id="1_fw7oc"]
+[ext_resource type="Texture2D" uid="uid://bo8v77sl668e6" path="res://assets/sprites/piston_big.png" id="2_y6s42"]
+[ext_resource type="PackedScene" uid="uid://d2svhibsx32i2" path="res://scenes/piston.tscn" id="3_v1tne"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n1dji"]
+size = Vector2(16, 16)
+
+[node name="PistonLeft" type="Node2D"]
+script = ExtResource("1_fw7oc")
+
+[node name="Block" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Block"]
+position = Vector2(0, 8)
+texture = ExtResource("2_y6s42")
+region_enabled = true
+region_rect = Rect2(0, 16, 64, 48)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Block"]
+position = Vector2(-72, 8)
+polygon = PackedVector2Array(104, -24, 104, 24, 40, 24, 40, 8, 80, 8, 80, -8, 40, -8, 40, -24)
+
+[node name="Piston" parent="." instance=ExtResource("3_v1tne")]
+position = Vector2(0, -64)
+
+[node name="Trigger" type="Area2D" parent="."]
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trigger"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_n1dji")
+
+[connection signal="body_entered" from="Trigger" to="." method="_on_trigger_extend_body_entered"]
+[connection signal="body_exited" from="Trigger" to="." method="_on_trigger_body_exited"]
