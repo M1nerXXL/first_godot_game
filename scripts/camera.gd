@@ -1,10 +1,12 @@
-extends Camera2D
+extends Node2D
 
-const ZOOM_MULTIPLIER = 0.5
+const ZOOM_MULTIPLIER = 0.6
 const MAXIMUM_ZOOM = 1
+var applied_zoom = 1
 
 @onready var player_big: CharacterBody2D = $"../PlayerBig"
 @onready var player_small: CharacterBody2D = $"../PlayerSmall"
+@onready var camera: Camera2D = $Camera
 
 func _process(delta: float) -> void:
 	var player_x_difference = player_big.position.x - player_small.position.x
@@ -23,28 +25,32 @@ func _process(delta: float) -> void:
 		player_y_difference *= -1
 	
 	# Calculate
-	var zoom_x = (960 / player_x_difference) * ZOOM_MULTIPLIER
-	var zoom_y = (960 / player_y_difference) * ZOOM_MULTIPLIER
-	
-	# Set minimum
-	var min_zoom_x = float(960) / float(limit_right - limit_left)
-	var min_zoom_y = float(960) / float(limit_bottom - limit_top)
-	
-	if zoom_x < min_zoom_x:
-		zoom_x = min_zoom_x
-	if zoom_y < min_zoom_y:
-		zoom_y = min_zoom_y
+	var zoom_x = ((get_viewport().size.x * 0.5) / player_x_difference) * ZOOM_MULTIPLIER
+	var zoom_y = ((get_viewport().size.x * 0.5) / player_y_difference) * ZOOM_MULTIPLIER * 0.5
 	
 	# Pick biggest zoom
-	var applied_zoom
+	var final_zoom
 	if zoom_x < zoom_y:
-		applied_zoom = zoom_x
+		final_zoom = zoom_x
 	else:
-		applied_zoom = zoom_y
+		final_zoom = zoom_y
 	
 	# Set maximum
-	if applied_zoom > MAXIMUM_ZOOM:
-		applied_zoom = MAXIMUM_ZOOM
+	if final_zoom > MAXIMUM_ZOOM:
+		final_zoom = MAXIMUM_ZOOM
 	
-	# Apply
-	zoom = Vector2(applied_zoom, applied_zoom)
+	# Smoothing
+	if applied_zoom > final_zoom * 1.2:
+		applied_zoom -= 0.001
+	elif applied_zoom < final_zoom:
+		applied_zoom += 0.0005
+	
+	# Set minimum
+	var min_zoom_x = float(get_viewport().size.x * 0.5) / float(camera.limit_right - camera.limit_left)
+	var min_zoom_y = float(get_viewport().size.y * 0.5) / float(camera.limit_bottom - camera.limit_top)
+	if min_zoom_x > min_zoom_y and applied_zoom < min_zoom_x:
+		applied_zoom = min_zoom_x
+	elif min_zoom_x < min_zoom_y and applied_zoom < min_zoom_y:
+		applied_zoom = min_zoom_y
+	
+	camera.zoom = Vector2(applied_zoom, applied_zoom)

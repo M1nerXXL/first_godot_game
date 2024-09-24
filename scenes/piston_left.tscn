@@ -24,7 +24,6 @@ position = Vector2(-72, 8)
 polygon = PackedVector2Array(104, -24, 104, 24, 40, 24, 40, 8, 80, 8, 80, -8, 40, -8, 40, -24)
 
 [node name="Piston" parent="." instance=ExtResource("3_v1tne")]
-position = Vector2(0, -64)
 
 [node name="Trigger" type="Area2D" parent="."]
 collision_mask = 4

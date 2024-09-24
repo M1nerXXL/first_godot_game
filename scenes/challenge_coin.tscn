@@ -1,0 +1,202 @@
+[gd_scene load_steps=21 format=3 uid="uid://b7fm0fk80phix"]
+
+[ext_resource type="Script" path="res://scripts/coin.gd" id="1_dt7g1"]
+[ext_resource type="Texture2D" uid="uid://sxjcwrdb6sxq" path="res://assets/sprites/coins.png" id="2_2vvt4"]
+[ext_resource type="Texture2D" uid="uid://c4v3j5ruem3yy" path="res://assets/sprites/coin_particle_1.png" id="3_4p8ui"]
+[ext_resource type="Texture2D" uid="uid://uy8r261iett1" path="res://assets/sprites/coin_particle_2.png" id="4_k6te6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3fsjt"]
+radius = 28.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_170ub"]
+atlas = ExtResource("2_2vvt4")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3345"]
+atlas = ExtResource("2_2vvt4")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y4p8v"]
+atlas = ExtResource("2_2vvt4")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s6ia1"]
+atlas = ExtResource("2_2vvt4")
+region = Rect2(128, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roa36"]
+atlas = ExtResource("2_2vvt4")
+region = Rect2(128, 256, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jmeyk"]
+animations = [{
+"frames": [{
+"duration": 7.0,
+"texture": SubResource("AtlasTexture_170ub")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r3345")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y4p8v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s6ia1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roa36")
+}],
+"loop": true,
+"name": &"pickedUp",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i2lk2"]
+radius = 28.0
+
+[sub_resource type="Gradient" id="Gradient_5dsky"]
+offsets = PackedFloat32Array(0.766798, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_n1bqo"]
+gradient = SubResource("Gradient_5dsky")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_38phy"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(28, 28, 1)
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 0.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_n1bqo")
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_32dct"]
+frames = 2
+speed_scale = 5.0
+frame_0/texture = ExtResource("3_4p8ui")
+frame_1/texture = ExtResource("4_k6te6")
+frame_1/duration = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ib1pw"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(28, 28, 1)
+emission_shape = 2
+emission_sphere_radius = 1.0
+radial_velocity_min = 9.99998
+radial_velocity_max = 9.99998
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_n1bqo")
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_ydgaa"]
+frames = 2
+speed_scale = 5.0
+frame_0/texture = ExtResource("3_4p8ui")
+frame_1/texture = ExtResource("4_k6te6")
+frame_1/duration = 1.0
+
+[sub_resource type="Animation" id="Animation_1y03g"]
+resource_name = "pickUp"
+length = 2.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 37.6991]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PickUpSparkles:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimatedSprite2D:animation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"default", &"pickedUp"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sparkles:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_emd6l"]
+_data = {
+"pickUp": SubResource("Animation_1y03g")
+}
+
+[node name="ChallengeCoin" type="StaticBody2D" groups=["Challenge Coins", "Coins"]]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_dt7g1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_3fsjt")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jmeyk")
+autoplay = "default"
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_i2lk2")
+
+[node name="Sparkles" type="GPUParticles2D" parent="."]
+amount = 4
+process_material = SubResource("ParticleProcessMaterial_38phy")
+texture = SubResource("AnimatedTexture_32dct")
+randomness = 0.5
+
+[node name="PickUpSparkles" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_ib1pw")
+texture = SubResource("AnimatedTexture_ydgaa")
+one_shot = true
+explosiveness = 1.0
+randomness = 0.5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_emd6l")
+}
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://debj51urtdr40"]
+[gd_scene load_steps=24 format=3 uid="uid://debj51urtdr40"]
 
 [ext_resource type="Script" path="res://scripts/player_big.gd" id="1_5ko5p"]
 [ext_resource type="Texture2D" uid="uid://doq5bdnmr6urq" path="res://assets/sprites/player_big.png" id="2_leud1"]
@@ -128,10 +128,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5tip0"]
-size = Vector2(52, 48)
+size = Vector2(44, 48)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rrpdx"]
-size = Vector2(46, 40)
+size = Vector2(44, 40)
 
 [sub_resource type="Animation" id="Animation_jqjsq"]
 length = 0.001
@@ -229,15 +229,20 @@ initial_velocity_min = 10.0
 initial_velocity_max = 30.0
 gravity = Vector3(0, 98, 0)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_syrmh"]
+size = Vector2(44, 32)
+
 [node name="PlayerBig" type="CharacterBody2D"]
+z_index = 5
 collision_layer = 2
+collision_mask = 9
 script = ExtResource("1_5ko5p")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_fqj7t")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.599742
+frame_progress = 0.546542
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 5
@@ -245,6 +250,7 @@ position = Vector2(0, 8)
 shape = SubResource("RectangleShape2D_5tip0")
 
 [node name="CollisionShape2DCrouch" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, 12)
 shape = SubResource("RectangleShape2D_rrpdx")
 disabled = true
@@ -285,4 +291,14 @@ target_position = Vector2(-22, 0)
 [node name="Right" type="RayCast2D" parent="."]
 target_position = Vector2(22, 0)
 
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_syrmh")
+debug_color = Color(1, 0, 0, 0.419608)
+
 [connection signal="timeout" from="ResetTimer" to="." method="_on_reset_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

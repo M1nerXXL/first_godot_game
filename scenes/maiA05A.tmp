@@ -302,7 +302,7 @@ visible = false
 polygon = PackedVector2Array(336, -576, 336, -480, 112, -480, 112, -592, 256, -592, 256, -560, 320, -560, 320, -576)
 
 [node name="PlayerBig" parent="." instance=ExtResource("3_8cwmf")]
-position = Vector2(288, -552)
+position = Vector2(288, -608)
 
 [node name="PlayerSmall" parent="." instance=ExtResource("4_pu40k")]
 position = Vector2(336, -584)
@@ -350,7 +350,6 @@ limit_bottom = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 2.0
 
-[connection signal="ready" from="." to="GameManager" method="_on_main_ready"]
 [connection signal="area_entered" from="TileMap/GroundLayerFronts/GroundLayerFront/Area2D" to="TileMap/GroundLayerFronts/GroundLayerFront" method="_on_area_2d_area_entered"]
 [connection signal="area_exited" from="TileMap/GroundLayerFronts/GroundLayerFront/Area2D" to="TileMap/GroundLayerFronts/GroundLayerFront" method="_on_area_2d_area_exited"]
 [connection signal="death" from="PlayerBig" to="PlayerSmall" method="_on_player_big_death"]
