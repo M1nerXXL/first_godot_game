@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://cblkjc2x1c4yc"]
+[gd_scene load_steps=31 format=3 uid="uid://cblkjc2x1c4yc"]
 
 [ext_resource type="Script" path="res://scripts/player_small.gd" id="1_fcj07"]
 [ext_resource type="Texture2D" uid="uid://d1bv78788pcn5" path="res://assets/sprites/player_small.png" id="3_sioak"]
@@ -78,6 +78,10 @@ region = Rect2(32, 16, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_bwn8l"]
 atlas = ExtResource("3_sioak")
 region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y0mt6"]
+atlas = ExtResource("3_sioak")
+region = Rect2(32, 48, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_njb8o"]
 atlas = ExtResource("3_sioak")
@@ -280,28 +284,43 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bwn8l")
 }, {
+"duration": 12.0,
+"texture": SubResource("AtlasTexture_y0mt6")
+}, {
 "duration": 2.0,
 "texture": SubResource("AtlasTexture_njb8o")
 }, {
-"duration": 2.0,
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pt0qv")
 }, {
 "duration": 2.0,
 "texture": SubResource("AtlasTexture_vmydc")
 }, {
-"duration": 2.0,
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pt0qv")
 }, {
 "duration": 2.0,
 "texture": SubResource("AtlasTexture_njb8o")
 }, {
-"duration": 2.0,
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pt0qv")
 }, {
 "duration": 2.0,
 "texture": SubResource("AtlasTexture_vmydc")
 }, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pt0qv")
+}, {
 "duration": 2.0,
+"texture": SubResource("AtlasTexture_njb8o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pt0qv")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_vmydc")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pt0qv")
 }, {
 "duration": 2.0,
@@ -317,7 +336,7 @@ size = Vector2(48, 48)
 
 [sub_resource type="Animation" id="Animation_ohyqh"]
 resource_name = "shock"
-length = 3.0
+length = 2.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -350,9 +369,10 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_fqj7t")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.944939
+frame_progress = 0.238207
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 z_index = 6
 position = Vector2(0, 8)
 shape = SubResource("RectangleShape2D_yggu5")
@@ -363,7 +383,7 @@ libraries = {
 }
 
 [node name="CoyoteTimer" type="Timer" parent="."]
-wait_time = 0.15
+wait_time = 0.05
 one_shot = true
 
 [node name="Area2D" type="Area2D" parent="."]

@@ -13,7 +13,7 @@ var deathOccured = false
 @onready var coyote_timer: Timer = $CoyoteTimer
 
 func _input(event):
-	if Input.is_action_just_pressed("small_shock") and !deathOccured and is_on_floor():
+	if Input.is_action_just_pressed("small_shock") and !deathOccured and is_on_floor() and !shock:
 		shock = true
 		velocity.x = 0
 		animated_sprite.play("shock")

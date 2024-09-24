@@ -26,3 +26,5 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		for group in get_groups():
 			if group == "Hidden Coins" or group == "Puzzle Coins" or group == "Challenge Coins" or group == "Tiny Coins":
 				game_manager.update_collectible(group)
+	elif !animation_player.is_playing():
+		animation_player.play("touchPickedUp")

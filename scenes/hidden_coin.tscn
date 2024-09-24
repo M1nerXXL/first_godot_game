@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cgbb5ls4b7cfs"]
+[gd_scene load_steps=22 format=3 uid="uid://cgbb5ls4b7cfs"]
 
 [ext_resource type="Texture2D" uid="uid://sxjcwrdb6sxq" path="res://assets/sprites/coins.png" id="1_anebt"]
 [ext_resource type="Script" path="res://scripts/coin.gd" id="1_v31w0"]
@@ -154,9 +154,27 @@ tracks/3/keys = {
 "values": [false]
 }
 
+[sub_resource type="Animation" id="Animation_bqbpb"]
+resource_name = "touchPickedUp"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_emd6l"]
 _data = {
-"pickUp": SubResource("Animation_1y03g")
+"pickUp": SubResource("Animation_1y03g"),
+"touchPickedUp": SubResource("Animation_bqbpb")
 }
 
 [node name="HiddenCoin" type="StaticBody2D" groups=["Coins", "Hidden Coins"]]
@@ -177,6 +195,7 @@ collision_layer = 8
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
 shape = SubResource("CircleShape2D_i2lk2")
 
 [node name="Sparkles" type="GPUParticles2D" parent="."]
