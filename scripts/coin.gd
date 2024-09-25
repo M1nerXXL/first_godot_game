@@ -5,7 +5,7 @@ extends StaticBody2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var sparkles: GPUParticles2D = $Sparkles
 
-var collected
+var collected = false
 var wasCollected
 
 func _physics_process(delta: float) -> void:

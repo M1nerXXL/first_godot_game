@@ -8,7 +8,16 @@ var applied_zoom = 1
 @onready var player_small: CharacterBody2D = $"../PlayerSmall"
 @onready var camera: Camera2D = $Camera
 
+func _ready() -> void:
+	await get_tree().process_frame
+	setCamera(false)
+	await get_tree().process_frame
+	camera.position_smoothing_enabled = true
+
 func _process(delta: float) -> void:
+	setCamera(true)
+
+func setCamera(smoothZoom):
 	var player_x_difference = player_big.position.x - player_small.position.x
 	var player_y_difference = player_big.position.y - player_small.position.y
 	
@@ -40,10 +49,13 @@ func _process(delta: float) -> void:
 		final_zoom = MAXIMUM_ZOOM
 	
 	# Smoothing
-	if applied_zoom > final_zoom * 1.2:
-		applied_zoom -= 0.001
-	elif applied_zoom < final_zoom:
-		applied_zoom += 0.0005
+	if smoothZoom:
+		if applied_zoom > final_zoom * 1.2:
+			applied_zoom -= 0.001
+		elif applied_zoom < final_zoom:
+			applied_zoom += 0.0005
+	else:
+		applied_zoom = final_zoom
 	
 	# Set minimum
 	var min_zoom_x = float(get_viewport().size.x * 0.5) / float(camera.limit_right - camera.limit_left)

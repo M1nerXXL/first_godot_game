@@ -1,6 +1,7 @@
 extends Node
 
 var savePath = "user://save_file.save"
+var spawnOnCheckpoint = true
 
 var collectiblesAmount = {
 	"hidden" = 0,
@@ -11,7 +12,8 @@ var collectiblesAmount = {
 var collectiblesObjects = []
 var collectiblesList = []
 
-var checkpointsActive = []
+var checkpointsActive = [0]
+var currentCheckpoint = 0
 
 @onready var ui: CanvasLayer = $"../UI"
 
@@ -48,7 +50,12 @@ func update_collected():
 
 # -- CHECKPOINT --
 func update_checkpoint(checkpointNumber):
-	checkpointsActive.append(checkpointNumber)
+	var alreadyActive = false
+	for item in checkpointsActive:
+		if item == checkpointNumber:
+			alreadyActive = true
+	if !alreadyActive:
+		checkpointsActive.append(checkpointNumber)
 
 # -- SAVE AND LOAD --
 func save():
@@ -60,6 +67,7 @@ func save():
 	save.append(collectiblesAmount)
 	save.append(collectiblesList)
 	save.append(checkpointsActive)
+	save.append(currentCheckpoint)
 	saveFile.store_var(save)
 	print_save(save)
 	print_rich("[color=green][ Save succesful. ][/color]")
@@ -87,6 +95,9 @@ func load_data():
 				get_node("../Checkpoints/" + str(item) + "/Big").activeCheckpoint = true
 				get_node("../Checkpoints/" + str(item) + "/Small").activeCheckpoint = true
 		
+		if save.size() >= 4:
+			currentCheckpoint = save[3]
+		
 		print_save(save)
 		print_rich("[color=green][ Loading complete. ][/color]")
 	else:
@@ -97,14 +108,23 @@ func print_save(save):
 	if save.size() >= 1:
 		print_rich("  [color=blue]Number of collectibles obtained:[/color]")
 		print_rich("    Hidden: [color=yellow]" + str(save[0]["hidden"]) + "[/color], Puzzle: [color=yellow]" + str(save[0]["puzzle"]) + "[/color], Challenge: [color=yellow]" + str(save[0]["challenge"]) + "[/color], Tiny: [color=yellow]" + str(save[0]["tiny"]) + "[/color]")
+	
 	if save.size() >= 2:
 		print_rich("  [color=blue]Collectibles collected:[/color]")
 		for i in save[1].size():
 			print_rich("    Path: [color=yellow]" + str(save[1][i][0]) + "[/color], Collected: [color=yellow]" + str(save[1][i][1]) + "[/color]")
+	
 	if save.size() >= 3:
 		print_rich("  [color=blue]Checkpoints activated:[/color]")
 		if save[2].size() != 0:
 			for i in save[2].size():
 				print_rich("    [color=yellow]" + str(save[2][i]) + "[/color]")
 		else:
-			print_rich("[color=yellow]    No checkpoints activated.[/color]")
+			print_rich("    [color=yellow]No checkpoints activated.[/color]")
+	
+	if save.size() >= 4:
+		print_rich("  [color=blue]Current checkpoint:[/color]")
+		if !save[3] == null:
+			print_rich("    [color=yellow]" + str(save[3]) + "[/color]")
+		else:
+			print_rich("    [color=yellow]No current checkpoint.[/color]")

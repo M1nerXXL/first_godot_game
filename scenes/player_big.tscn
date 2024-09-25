@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://debj51urtdr40"]
+[gd_scene load_steps=23 format=3 uid="uid://debj51urtdr40"]
 
 [ext_resource type="Script" path="res://scripts/player_big.gd" id="1_5ko5p"]
 [ext_resource type="Texture2D" uid="uid://doq5bdnmr6urq" path="res://assets/sprites/player_big.png" id="2_leud1"]
@@ -130,46 +130,55 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5tip0"]
 size = Vector2(44, 48)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rrpdx"]
-size = Vector2(44, 40)
-
 [sub_resource type="Animation" id="Animation_jqjsq"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CollisionShape2D:disabled")
+tracks/0/path = NodePath(".:collision_layer")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [false]
+"values": [2]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2DCrouch:disabled")
+tracks/1/path = NodePath("CollisionShape2D:shape:size")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
+"update": 0,
+"values": [Vector2(44, 48)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".:collision_layer")
+tracks/2/path = NodePath("CollisionShape2D:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 8)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CollisionShape2D:one_way_collision")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [2]
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_hiayt"]
@@ -178,38 +187,50 @@ length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CollisionShape2D:disabled")
+tracks/0/path = NodePath(".:collision_layer")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [3]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2DCrouch:disabled")
+tracks/1/path = NodePath("CollisionShape2D:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(0, 12)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".:collision_layer")
+tracks/2/path = NodePath("CollisionShape2D:shape:size")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(44, 40)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CollisionShape2D:one_way_collision")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [3]
+"values": [true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xfos1"]
@@ -242,20 +263,12 @@ script = ExtResource("1_5ko5p")
 sprite_frames = SubResource("SpriteFrames_fqj7t")
 animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.745092
+frame_progress = 0.11714
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 z_index = 5
 position = Vector2(0, 8)
 shape = SubResource("RectangleShape2D_5tip0")
-
-[node name="CollisionShape2DCrouch" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0, 12)
-shape = SubResource("RectangleShape2D_rrpdx")
-disabled = true
-one_way_collision = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -1,10 +1,12 @@
 extends StaticBody2D
 
-var standard
-var distorted
-var activePlate
+var checkpointReady = false
+var standardScreen
+var distortedScreen
+var plateActive
 var otherCheckpoint
 var activeCheckpoint
+var associatedPlayer
 
 @onready var game_manager: Node = $"/root/Main/GameManager"
 @onready var screen: AnimatedSprite2D = $Screen
@@ -12,17 +14,23 @@ var activeCheckpoint
 @onready var number_1: Sprite2D = $Number1
 @onready var number_2: Sprite2D = $Number2
 @onready var pressure_plate_sprite: Sprite2D = $PressurePlate/Sprite2D
+@onready var pressure_plate_trigger: Area2D = $PressurePlate/PlateTrigger
 @onready var animation_player: AnimationPlayer = $PressurePlate/PlateTrigger/AnimationPlayer
 
 func _ready() -> void:
-	# Set screen
+	await get_node("/root/Main").ready
+	checkpointReady = true
+	
+	# Set player
 	if get_meta("bigPlayer"):
-		standard = "big"
-		distorted = "bigDistort"
+		standardScreen = "big"
+		distortedScreen = "bigDistort"
+		associatedPlayer = $"/root/Main/PlayerBig"
 	else:
-		standard = "small"
-		distorted = "smallDistort"
-	screen.play(standard)
+		standardScreen = "small"
+		distortedScreen = "smallDistort"
+		associatedPlayer = $"/root/Main/PlayerSmall"
+	screen.play(standardScreen)
 	
 	# Set numbers
 	var digitOne
@@ -35,33 +43,55 @@ func _ready() -> void:
 	else:
 		number_2.region_rect = Rect2(81 + digitTwo * 12, 87, 12, 22)
 	
-	# Start updating screen
-	set_and_start_timer()
-
-func _physics_process(delta: float) -> void:
 	# Find other checkpoint
 	if get_meta("bigPlayer"):
 		otherCheckpoint = $"../Small"
 	else:
 		otherCheckpoint = $"../Big"
 	
-	# Check activeness
-	if activeCheckpoint:
+	# Spawn player
+	if game_manager.spawnOnCheckpoint && game_manager.currentCheckpoint == get_meta("checkpointNumber"):
+		activeCheckpoint = true
+		associatedPlayer.position = position
+		animation_player.play("spawn")
+		await animation_player.animation_finished
+		associatedPlayer.spawned = true
+	
+	# Start updating screen
+	set_and_start_timer()
+
+func _physics_process(delta: float) -> void:
+	# Current checkpoint
+	if game_manager.currentCheckpoint == get_meta("checkpointNumber"):
 		pressure_plate_sprite.region_rect = Rect2(5, 0, 70, 14)
-	else:
-		if activePlate:
-			if otherCheckpoint.activePlate:
-				# Both active
+		pressure_plate_trigger.monitoring = false
+	
+	# Active checkpoint
+	elif activeCheckpoint:
+		pressure_plate_sprite.region_rect = Rect2(5, 15, 70, 14)
+		if pressure_plate_trigger.monitoring == false:
+			pressure_plate_trigger.monitoring = true
+			animation_player.play("release")
+		if plateActive and otherCheckpoint.plateActive:
+			if get_meta("bigPlayer"):
 				activeCheckpoint = true
-				pressure_plate_sprite.region_rect = Rect2(5, 0, 70, 14)
-				if get_meta("bigPlayer"):
-					game_manager.update_checkpoint(get_parent().name)
-			else:
-				# Active
-				pressure_plate_sprite.region_rect = Rect2(5, 15, 70, 14)
-		else:
-			# Not active
-			pressure_plate_sprite.region_rect = Rect2(5, 30, 70, 14)
+				otherCheckpoint.activeCheckpoint = true
+				game_manager.update_checkpoint(int(str(get_parent().name)))
+				game_manager.currentCheckpoint = get_meta("checkpointNumber")
+				game_manager.save()
+	
+	# Inactive checkpoint
+	else:
+		pressure_plate_sprite.region_rect = Rect2(5, 30, 70, 14)
+		pressure_plate_trigger.monitoring = true
+		# Activate checkpoint and make it the current one
+		if plateActive and otherCheckpoint.plateActive:
+			if get_meta("bigPlayer"):
+				activeCheckpoint = true
+				otherCheckpoint.activeCheckpoint = true
+				game_manager.update_checkpoint(int(str(get_parent().name)))
+				game_manager.currentCheckpoint = get_meta("checkpointNumber")
+				game_manager.save()
 
 func set_and_start_timer():
 	distortion_timer.wait_time = randf_range(0.5, 2)
@@ -71,19 +101,20 @@ func _on_distortion_timer_timeout() -> void:
 	var random = randf()
 	screen.stop()
 	if random > 0.2:
-		screen.play(distorted)
+		screen.play(distortedScreen)
 	else:
 		screen.play("noSignal")
 	await screen.animation_finished
-	screen.play(standard)
+	screen.play(standardScreen)
 	set_and_start_timer()
 
 func _on_plate_trigger_body_entered(body: Node2D) -> void:
 	if (get_meta("bigPlayer") and body.name == "PlayerBig") or (!get_meta("bigPlayer") and body.name == "PlayerSmall"):
 		animation_player.play("push")
-		activePlate = true
+		plateActive = true
 
 func _on_plate_trigger_body_exited(body: Node2D) -> void:
 	if (get_meta("bigPlayer") and body.name == "PlayerBig") or (!get_meta("bigPlayer") and body.name == "PlayerSmall"):
-		animation_player.play("release")
-		activePlate = false
+		if !game_manager.currentCheckpoint == get_meta("checkpointNumber"):
+			animation_player.play("release")
+		plateActive = false
